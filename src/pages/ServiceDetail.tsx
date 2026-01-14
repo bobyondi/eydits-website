@@ -1,8 +1,13 @@
 import { useParams, Link } from 'react-router-dom';
+import { useEffect } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { services } from '@/data/services';
+import ExpertSelector from '@/components/experts/ExpertSelector';
+import PriceCalculator from '@/components/pricing/PriceCalculator';
+import QuoteDisplay from '@/components/pricing/QuoteDisplay';
+import { useAppContext } from '@/context/AppContext';
 import { FileText, Edit, Video, Image, Box, Book, ArrowLeft, Check } from 'lucide-react';
 
 const iconMap: Record<string, React.ElementType> = {
@@ -17,6 +22,13 @@ const iconMap: Record<string, React.ElementType> = {
 const ServiceDetail = () => {
   const { serviceId } = useParams<{ serviceId: string }>();
   const service = services.find((s) => s.id === serviceId);
+  const { setSelectedService } = useAppContext();
+
+  useEffect(() => {
+    if (service) {
+      setSelectedService(service);
+    }
+  }, [service, setSelectedService]);
 
   if (!service) {
     return (
@@ -75,26 +87,45 @@ const ServiceDetail = () => {
 
         {/* Details Section */}
         <section className="py-24 px-[5%]">
-          <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-3 gap-16">
-            <div className="lg:col-span-2">
-              <h2 className="font-display text-2xl font-bold mb-8">What's Included</h2>
-              <ul className="space-y-6">
-                {service.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-4">
-                    <div className="w-8 h-8 bg-teal-500/10 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Check className="w-4 h-4 text-teal-500" strokeWidth={3} />
-                    </div>
-                    <span className="text-lg text-primary-700">{feature}</span>
-                  </li>
-                ))}
-              </ul>
+          <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-3 gap-16">
+            <div className="lg:col-span-2 space-y-16">
+              {/* What's Included */}
+              <div>
+                <h2 className="font-display text-2xl font-bold mb-8">What's Included</h2>
+                <ul className="space-y-6">
+                  {service.features.map((feature) => (
+                    <li key={feature} className="flex items-start gap-4">
+                      <div className="w-8 h-8 bg-teal-500/10 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Check className="w-4 h-4 text-teal-500" strokeWidth={3} />
+                      </div>
+                      <span className="text-lg text-primary-700">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-              <div className="mt-16">
+              {/* Price Calculator */}
+              <PriceCalculator service={service} />
+
+              {/* Expert Selection */}
+              <ExpertSelector serviceId={service.id} />
+
+              {/* How It Works */}
+              <div>
                 <h2 className="font-display text-2xl font-bold mb-8">How It Works</h2>
                 <div className="space-y-8">
                   <div className="flex items-start gap-6">
                     <div className="w-10 h-10 gradient-accent rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
                       1
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-lg mb-2">Configure & Select Expert</h3>
+                      <p className="text-primary-600">Choose your project criteria and select your preferred expert.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-6">
+                    <div className="w-10 h-10 gradient-accent rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
+                      2
                     </div>
                     <div>
                       <h3 className="font-bold text-lg mb-2">Submit Your Project</h3>
@@ -103,46 +134,20 @@ const ServiceDetail = () => {
                   </div>
                   <div className="flex items-start gap-6">
                     <div className="w-10 h-10 gradient-accent rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
-                      2
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg mb-2">Expert Review</h3>
-                      <p className="text-primary-600">Our vetted professionals review and enhance your work.</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-6">
-                    <div className="w-10 h-10 gradient-accent rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
                       3
                     </div>
                     <div>
                       <h3 className="font-bold text-lg mb-2">Receive Deliverable</h3>
-                      <p className="text-primary-600">Get your polished, production-ready work within 24-48 hours.</p>
+                      <p className="text-primary-600">Get your polished, production-ready work within the agreed timeframe.</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Pricing Card */}
+            {/* Quote Display - Sticky Sidebar */}
             <div className="lg:col-span-1">
-              <div className="sticky top-32 bg-neutral-50 rounded-2xl p-8 border border-neutral-200">
-                <h3 className="font-display text-xl font-bold mb-6">Pricing</h3>
-                <div className="flex items-baseline gap-2 mb-4">
-                  <span className="font-display text-4xl font-extrabold text-foreground">
-                    {service.price}
-                  </span>
-                  <span className="text-primary-600">{service.priceLabel}</span>
-                </div>
-                <p className="text-sm text-primary-600 mb-8">
-                  Final price depends on project scope and complexity.
-                </p>
-                <Button asChild className="w-full" size="lg" variant="cta">
-                  <a href="#contact">Get Your Free Quote</a>
-                </Button>
-                <p className="text-xs text-center text-primary-500 mt-4">
-                  100% satisfaction guarantee
-                </p>
-              </div>
+              <QuoteDisplay />
             </div>
           </div>
         </section>

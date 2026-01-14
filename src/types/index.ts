@@ -15,12 +15,52 @@ export interface Service {
 export interface Expert {
   id: string;
   name: string;
-  initials: string;
-  role: string;
-  company: string;
-  specialization: string[];
-  yearsExperience: number;
   avatar?: string;
+  specializations: string[]; // service IDs they handle
+  rating: number;
+  completedProjects: number;
+  responseTime: string;
+  bio: string;
+  expertise: string[];
+  availability: 'available' | 'busy' | 'offline';
+}
+
+export interface PricingCriteria {
+  urgency: 'standard' | 'rush' | 'express';
+  complexity: 'basic' | 'standard' | 'complex';
+  quantity?: number; // words, pages, videos, etc.
+}
+
+export interface PricingRule {
+  serviceId: string;
+  basePrice: number;
+  unit: string; // 'document', '1000 words', 'video', 'design'
+  urgencyMultipliers: {
+    standard: number;
+    rush: number;
+    express: number;
+  };
+  complexityMultipliers: {
+    basic: number;
+    standard: number;
+    complex: number;
+  };
+  quantityBased: boolean;
+}
+
+export interface PriceBreakdown {
+  label: string;
+  amount: number;
+}
+
+export interface Quote {
+  serviceId: string;
+  serviceName: string;
+  basePrice: number;
+  finalPrice: number;
+  turnaroundTime: string;
+  breakdown: PriceBreakdown[];
+  criteria: PricingCriteria;
 }
 
 export interface Project {
