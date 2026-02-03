@@ -53,10 +53,19 @@ const Navbar = () => {
     navigate('/');
   };
 
-  const handleDashboard = (e: React.MouseEvent) => {
+  const handleDashboard = async (e: React.MouseEvent) => {
     e.preventDefault();
     closeMenu();
-    navigate('/dashboard');
+    
+    // Check if user is admin and redirect accordingly
+    const { adminApi } = await import('@/services/adminApi');
+    const isAdmin = await adminApi.isAdmin();
+    
+    if (isAdmin) {
+      navigate('/admin');
+    } else {
+      navigate('/dashboard');
+    }
   };
 
   return (
