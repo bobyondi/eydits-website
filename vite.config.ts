@@ -5,9 +5,8 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  // ✅ IMPORTANT: must match your GitHub Pages repo name
-  // Your site URL: https://bobvondi.github.io/eydtis-website/
-  base: "/eydtis-website/",
+  // ✅ For Vercel / root domain hosting (https://eydtis.com)
+  base: "/",
 
   server: {
     host: "::",
